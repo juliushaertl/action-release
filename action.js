@@ -20,7 +20,8 @@ const github = require('@actions/github');
         const draft = core.getInput('draft') == 'true';
         const prerelease = core.getInput('prerelease') == 'true';
         const files = core.getInput('files').split(';');
-        
+        const overwrite = core.getInput('overwrite') == 'true';
+
         const commit = 'master'; // This could likely be a parameter in the future. Get commit like this: github.context.sha
         let release = null;
         let created = false; // Indicate if the release was created, or merely updated.
@@ -60,15 +61,11 @@ const github = require('@actions/github');
             debug(`Release already exists. Do the 🐹 dance.`, result);
 
             // If this has been published, we'll create a new release.
-            if (draft && !result.data.draft) {
+            if (draft && !result.data.draft && !overwrite) {
                 release = null;
                 debug(`The existing release was not draft. We can create a brand ✨ new release.`);
             }
-            else {
-                // We cannot update assets on existing releases, so until a future update, we'll ignore updating releases that are published.
-                info(`Draft parameter is set to false and there is an existing release. Skipping any updates to release 🛑.`);
-                return;
-            }
+
         }
         catch (error) {
             if (error.name != 'HttpError' || error.status != 404) {
