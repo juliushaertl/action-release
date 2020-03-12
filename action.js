@@ -139,8 +139,10 @@ const github = require('@actions/github');
             var fileInfo = getFile(file);
 
             // If not a new release, we must delete the existing one.
+			info(`Checking release and created`, release);
             if (!created && release.assets) {
                 const asset = release.assets.find(a => a.name === fileInfo.name);
+				info(`Checking download`, asset);
 
                 // If the asset already exists, make sure we delete it first.
                 if (asset) {
@@ -172,7 +174,7 @@ const github = require('@actions/github');
                         ['content-length']: fileInfo.size
                     },
                     name: fileInfo.name,
-                    file: fileInfo.file
+                    data: fileInfo.file
                 });
 
                 debug('Result from upload', result);
