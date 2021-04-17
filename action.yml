@@ -20,6 +20,8 @@ inputs:
     default: false
   prerelease:
     default: false
+  overwrite:
+    default: false
   files:
     required: true
     default: ''
